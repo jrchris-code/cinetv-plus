@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineTv Plus - Plataforma IPTV</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        :root {
+            --primary-color: #8e8e93;
+            --secondary-color: #686870;
+            --dark-bg: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-color: #1d1d1f;
+            --accent-color: #007aff;
+            --border-color: #d2d2d7;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #8e8e93, #686870);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 0 15px rgba(142, 142, 147, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .welcome-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #1d1d1f, #424245);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .welcome-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.7;
+        }
+        
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            width: 150px;
+            height: 250px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .category-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .category-name {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .category-btn.cine {
+            background: linear-gradient(135deg, #f5f5f7, #e5e5ea);
+        }
+        
+        .category-btn.music {
+            background: linear-gradient(135deg, #f5f5f7, #e5e5ea);
+        }
+        
+        /* Channels Section */
+        .channels-section {
+            display: none;
+            padding: 40px 0;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #1d1d1f;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 122, 255, 0.1);
+        }
+        
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .channel-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .channel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .channel-logo {
+            width: 100%;
+            height: 186px;
+            object-fit: contain;
+            background: linear-gradient(135deg, #f5f5f7, #e5e5ea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0;
+        }
+        
+        .channel-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .channel-info {
+            padding: 20px;
+        }
+        
+        .channel-name {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        
+        .channel-description {
+            font-size: 14px;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+        
+        /* Player Section */
+        .player-section {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-container {
+            width: 90%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .player-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-player {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .close-player:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+        }
+        
+        #video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 36px;
+            }
+            
+            .category-buttons {
+                gap: 20px;
+            }
+            
+            .channels-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 28px;
+            }
+            
+            .category-btn {
+                width: 130px;
+                height: 200px;
+            }
+            
+            .category-icon {
+                font-size: 40px;
+            }
+            
+            .category-name {
+                font-size: 20px;
+            }
+            
+            .channels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">https://i.imgur.com/Ub5VLf0.png</div>
+                <div class="logo-text">CineTv Plus</div>
+            </div>
+        </header>
+        
+        <section class="welcome-section" id="welcome-section">
+            <h1 class="welcome-title">BIENVENIDO A CINETV PLUS</h1>
+            <p class="welcome-subtitle">Disfruta de los mejores canales de cine y música en streaming</p>
+            
+            <div class="category-buttons">
+                <div class="category-btn cine" data-category="cine">
+                    <div class="category-icon">🎬</div>
+                    <div class="category-name">CINE</div>
+                </div>
+                <div class="category-btn music" data-category="music">
+                    <div class="category-icon">🎵</div>
+                    <div class="category-name">MÚSICA</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="channels-section" id="channels-section">
+            <h2 class="section-title">
+                <button class="back-btn" id="back-btn">← Volver</button>
+                <span id="section-category-title">CANALES</span>
+            </h2>
+            <div class="channels-grid" id="channels-grid">
+                <!-- Los canales se cargarán dinámicamente aquí -->
+            </div>
+        </section>
+    </div>
+    
+    <section class="player-section" id="player-section">
+        <div class="player-container">
+            <div class="player-header">
+                <div class="player-title" id="player-title">Reproduciendo canal</div>
+                <button class="close-player" id="close-player">×</button>
+            </div>
+            <div class="video-container">
+                <video id="video-player" controls></video>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Función para cifrar URLs
+        function encryptURL(url) {
+            // Base64 + reverso + caracteres adicionales para hacerlo menos obvio
+            return btoa(url).split('').reverse().join('') + '==';
+        }
+
+        // Función para descifrar URLs
+        function decryptURL(encrypted) {
+            try {
+                // Remover los == adicionales y revertir
+                const withoutEquals = encrypted.slice(0, -2);
+                const reversed = withoutEquals.split('').reverse().join('');
+                return atob(reversed);
+            } catch (e) {
+                console.error('Error descifrando URL:', e);
+                return '';
+            }
+        }
+
+        // Datos de canales con URLs cifradas
+        const channelsData = {
+            cine: [
+                {
+                    id: 1,
+                    name: "Cine Canal",
+                    description: "Las mejores películas de todos los tiempos",
+                    logo: "https://i.imgur.com/Rcxr410.png",
+                    encryptedUrl: "8u3m.xedni/CINECANAL/z.bneggen.1reamts//:sptth" + "=="
+                },
+                {
+                    id: 2,
+                    name: "Cine Sony",
+                    description: "Sony Channel para ver los mejores programas",
+                    logo: "https://i.imgur.com/bZWoDTg.png",
+                    encryptedUrl: "8u3m.ylp/tilpsaj.1_720p/enic/golb/moc.tdwolk.nec-a//:sptth" + "=="
+                },
+                {
+                    id: 3,
+                    name: "Cine Premiere",
+                    description: "Exitos taquilleros",
+                    logo: "https://i.imgur.com/PdhWTO6.png",
+                    encryptedUrl: "8u3m.ret sam/v.tu tol.p/moc.t v.ll acirem a/sre t t ubs/moc.t v.t ol p/sre t t ubs. re hc t ubs- re t t i hs-ec iv res//:sptth" + "=="
+                },
+                {
+                    id: 4,
+                    name: "Cine Adrenalina",
+                    description: "Peliculas de Accion",
+                    logo: "https://i.imgur.com/njCKaMv.png",
+                    encryptedUrl: "8u3m.ret sam/2d836e701e5a792e9dd461d5/ne nnac/ sl h/ tci hc s/moc.t v.t ol p/sre t t ubs. re hc t ubs//:sptth" + "=="
+                },
+                {
+                    id: 5,
+                    name: "Cine Terror",
+                    description: "Para los amantes del miedo y el suspenso",
+                    logo: "https://i.imgur.com/I5XxyLI.png",
+                    encryptedUrl: "8u3m.ret sam/ba7efe9f00047e59edfcdd5/ne nnac/ sl h/dem be/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
+                },
+                {
+                    id: 6,
+                    name: "Aurora Media Films",
+                    description: "Peliculas que debes ver",
+                    logo: "https://i.imgur.com/DVC5w6H.png",
+                    encryptedUrl: "8u3m.e vilfa mororua/ev il/713/ vog.an at sihpi m aert s. t c e/ nd c//:sptth" + "=="
+                },
+                {
+                    id: 7,
+                    name: "Pelis y Popcorn",
+                    description: "Pelis para maratonear",
+                    logo: "https://i.imgur.com/jP19sGt.png",
+                    encryptedUrl: "8u3m.ret sam/57372337000072c73fbf06/ne nnac/ sl h/1- esu- re t t i hs- ne nnac- ec iv res-4d- v-fc/ re t t i hs. re hc t ubs- v-fc//:ptth" + "=="
+                },
+                {
+                    id: 8,
+                    name: "TV Cine Estelar",
+                    description: "Lo mejor de PlutoTVCineEstelar",
+                    logo: "https://i.imgur.com/v3BO4nW.png",
+                    encryptedUrl: "8u3m.ret sam/72fe09c7000676c6b1ca1f5/ne nnac/ sl h/dem be/ re t t i hs- ne nnac/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
+                },
+                {
+                    id: 9,
+                    name: "TV Cine Accion",
+                    description: "Lo mejor de PlutoTVCineEstelar",
+                    logo: "https://i.imgur.com/PXhCzXn.png",
+                    encryptedUrl: "8u3m.ret sam/d6d7bb7000888d d1 95a c1f 5/ne nnac/ sl h/dem be/ re t t i hs- ne nnac/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
+                },
+                {
+                    id: 10,
+                    name: "vacante",
+                    description: "vacante",
+                    logo: "🎬",
+                    encryptedUrl: "8u3m.edni-enic//:sptth" + "=="
+                }
+            ],
+            music: [
+                {
+                    id: 1,
+                    name: "VM Latino",
+                    description: "Exitos Latinos",
+                    logo: "https://i.imgur.com/Dvo1b82.png",
+                    encryptedUrl: "8u3m.ylp/tilpsaj/onitalmv/vtvm/kcol kn aert s.moc.526425fe95//:sptth" + "=="
+                },
+                {
+                    id: 2,
+                    name: "TV Exitos",
+                    description: "Exitos del mundo",
+                    logo: "https://i.imgur.com/ahz7X7u.png",
+                    encryptedUrl: "8u3m.sotixevt/sotixevt/06391: moc.et r onl aeds oid em pur t g//:sptth" + "=="
+                },
+                {
+                    id: 3,
+                    name: "TV MTV Classic",
+                    description: "MTV Clasico",
+                    logo: "https://i.imgur.com/NPavpts.png",
+                    encryptedUrl: "8u3m. ac 09aa8000a ed79 12a a66- ul p/ uk.2pmj//:sptth" + "=="
+                },
+                {
+                    id: 4,
+                    name: "vacante",
+                    description: "sinRitmo",
+                    logo: "💃",
+                    encryptedUrl: "8u3m.anital- ac isum//:sptth" + "=="
+                }
+            ]
+        };
+
+        // Elementos DOM
+        const welcomeSection = document.getElementById('welcome-section');
+        const channelsSection = document.getElementById('channels-section');
+        const channelsGrid = document.getElementById('channels-grid');
+        const sectionCategoryTitle = document.getElementById('section-category-title');
+        const backBtn = document.getElementById('back-btn');
+        const playerSection = document.getElementById('player-section');
+        const videoPlayer = document.getElementById('video-player');
+        const playerTitle = document.getElementById('player-title');
+        const closePlayer = document.getElementById('close-player');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+
+        // Variables
+        let hls = null;
+        let currentCategory = '';
+
+        // Desactivar clic derecho e inspección
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Desactivar teclas de desarrollo (F12, Ctrl+Shift+I, etc.)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Event Listeners
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentCategory = button.getAttribute('data-category');
+                showChannels(currentCategory);
+            });
+        });
+
+        backBtn.addEventListener('click', showWelcome);
+        closePlayer.addEventListener('click', closeVideoPlayer);
+
+        // Funciones
+        function showChannels(category) {
+            welcomeSection.style.display = 'none';
+            channelsSection.style.display = 'block';
+            
+            // Actualizar título de la sección
+            const categoryTitle = category === 'cine' ? 'CANALES DE CINE' : 'CANALES DE MÚSICA';
+            sectionCategoryTitle.textContent = categoryTitle;
+            
+            // Limpiar grid
+            channelsGrid.innerHTML = '';
+            
+            // Cargar canales
+            const channels = channelsData[category];
+            channels.forEach(channel => {
+                const channelCard = document.createElement('div');
+                channelCard.className = 'channel-card';
+                
+                // Verificar si el logo es una URL de imagen o un emoji
+                const logoContent = channel.logo.startsWith('http') 
+                    ? `<img src="${channel.logo}" alt="${channel.name}" onerror="this.style.display='none'">`
+                    : `<div style="font-size: 60px;">${channel.logo}</div>`;
+                
+                channelCard.innerHTML = `
+                    <div class="channel-logo">
+                        ${logoContent}
+                    </div>
+                    <div class="channel-info">
+                        <h3 class="channel-name">${channel.name}</h3>
+                        <p class="channel-description">${channel.description}</p>
+                    </div>
+                `;
+                
+                channelCard.addEventListener('click', () => {
+                    playChannel(channel);
+                });
+                
+                channelsGrid.appendChild(channelCard);
+            });
+        }
+
+        function showWelcome() {
+            channelsSection.style.display = 'none';
+            playerSection.style.display = 'none';
+            welcomeSection.style.display = 'block';
+            
+            // Detener reproducción si está activa
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+        }
+
+        function playChannel(channel) {
+            playerTitle.textContent = channel.name;
+            playerSection.style.display = 'flex';
+            
+            // Descifrar la URL antes de reproducir
+            const decryptedUrl = decryptURL(channel.encryptedUrl);
+            
+            if (!decryptedUrl) {
+                alert('Error al cargar el canal. Intente nuevamente.');
+                return;
+            }
+            
+            // Configurar HLS.js para reproducir el stream
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(decryptedUrl);
+                hls.attachMedia(videoPlayer);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoPlayer.play();
+                });
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                // Soporte nativo para HLS (Safari)
+                videoPlayer.src = decryptedUrl;
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    videoPlayer.play();
+                });
+            }
+        }
+
+        function closeVideoPlayer() {
+            playerSection.style.display = 'none';
+            
+            // Detener reproducción
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+            videoPlayer.pause();
+            videoPlayer.src = '';
+        }
+
+        // Inicializar
+        showWelcome();
+    </script>
+</body>
+</html>
