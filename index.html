@@ -76,6 +76,11 @@
         .welcome-section {
             text-align: center;
             padding: 60px 0;
+            position: relative;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .welcome-title {
@@ -97,6 +102,7 @@
             justify-content: center;
             gap: 40px;
             flex-wrap: wrap;
+            margin-bottom: 60px;
         }
         
         .category-btn {
@@ -139,6 +145,32 @@
         
         .category-btn.music {
             background: linear-gradient(135deg, #f5f5f7, #e5e5ea);
+        }
+        
+        /* Visitor Counter */
+        .visitor-counter {
+            margin-top: auto;
+            padding: 20px 0;
+            text-align: center;
+            color: #8e8e93;
+            font-size: 14px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        
+        .visitor-counter:hover {
+            opacity: 0.9;
+        }
+        
+        .counter-number {
+            font-weight: 600;
+            color: #686870;
+            margin: 0 3px;
+        }
+        
+        .counter-icon {
+            margin-right: 5px;
+            font-size: 12px;
         }
         
         /* Channels Section */
@@ -333,6 +365,11 @@
             .logo-text {
                 font-size: 22px;
             }
+            
+            .visitor-counter {
+                font-size: 13px;
+                padding: 15px 0;
+            }
         }
         
         @media (max-width: 480px) {
@@ -355,6 +392,10 @@
             
             .channels-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .visitor-counter {
+                font-size: 12px;
             }
         }
     </style>
@@ -382,6 +423,14 @@
                     <div class="category-name">MÚSICA</div>
                 </div>
             </div>
+            
+            <!-- Contador de visitas -->
+            <div class="visitor-counter" id="visitor-counter">
+                <span class="counter-icon">👁️</span>
+                <span>Views</span>
+                <span class="counter-number" id="visit-count">0</span>
+                <span>veces</span>
+            </div>
         </section>
         
         <section class="channels-section" id="channels-section">
@@ -408,7 +457,33 @@
     </section>
 
     <script>
-        // Datos de canales funcionales
+        // ===== CONTADOR DE VISITAS =====
+        function initVisitorCounter() {
+            // Clave única para almacenar en localStorage
+            const STORAGE_KEY = 'cinetv_visit_count';
+            
+            // Obtener contador actual o inicializar en 0
+            let visitCount = parseInt(localStorage.getItem(STORAGE_KEY)) || 0;
+            
+            // Incrementar contador
+            visitCount++;
+            
+            // Guardar en localStorage
+            localStorage.setItem(STORAGE_KEY, visitCount.toString());
+            
+            // Actualizar display
+            document.getElementById('visit-count').textContent = visitCount.toLocaleString();
+            
+            // Efecto sutil al cargar
+            const counter = document.getElementById('visitor-counter');
+            counter.style.opacity = '0';
+            setTimeout(() => {
+                counter.style.transition = 'opacity 0.5s ease';
+                counter.style.opacity = '0.6';
+            }, 1000);
+        }
+
+        // ===== DATOS DE CANALES =====
         const channelsData = {
             cine: [
                 {
@@ -439,7 +514,7 @@
                     logo: "➕",
                     url: "#"
                 }
-                 
+                
             ],
             music: [
                 {
@@ -469,7 +544,7 @@
                     description: "Espacio disponible para nuevo canal",
                     logo: "➕",
                     url: "#"
-                }
+                }               
             ]
         };
 
@@ -488,6 +563,12 @@
         // Variables
         let hls = null;
         let currentCategory = '';
+
+        // ===== INICIALIZACIÓN =====
+        function init() {
+            initVisitorCounter();
+            showWelcome();
+        }
 
         // Desactivar clic derecho e inspección
         document.addEventListener('contextmenu', function(e) {
@@ -628,13 +709,7 @@
         }
 
         // Inicializar
-        showWelcome();
+        init();
     </script>
 </body>
 </html>
-
-
-
-
-
-
