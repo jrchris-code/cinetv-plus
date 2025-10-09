@@ -4,7 +4,7 @@
     <meta name="referrer" content="no-referrer">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineTv Plus - Plataforma IPTV</title>
+    <title>CineTv Plus - Plataforma TV</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         :root {
@@ -394,110 +394,114 @@
     </section>
 <script>
     // Datos de canales SIN cifrado (para testing)
-    const channelsData = {
-        cine: [
-            {
-                id: 1,
-                name: "Cine Canal",
-                description: "Las mejores películas de todos los tiempos",
-                logo: "https://i.imgur.com/Rcxr410.png",
-                url: "https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8"
-            },
-            {
-                id: 2,
-                name: "Cine Sony", 
-                description: "Sony Channel para ver los mejores programas",
-                logo: "https://i.imgur.com/bZWoDTg.png",
-                url: "https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8"
-            },
-            {
-                id: 3,
-                name: "Cine Premiere",
-                description: "Exitos taquilleros",
-                logo: "https://i.imgur.com/PdhWTO6.png", 
-                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5cf968040ab7d8f181e6a68b/master.m3u8"
-            },
-            {
-                id: 4,
-                name: "Cine Adrenalina",
-                description: "Peliculas de Accion",
-                logo: "https://i.imgur.com/njCKaMv.png",
-                url: "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5d8d164d92e97a5e107638d2/master.m3u8"
-            },
-            {
-                id: 5,
-                name: "Cine Terror",
-                description: "Para los amantes del miedo y el suspenso", 
-                logo: "https://i.imgur.com/I5XxyLI.png",
-                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5dcddf1ed95e740009fef7ab/master.m3u8"
-            },
-            {
-                id: 6,
-                name: "Aurora Media Films",
-                description: "Peliculas que debes ver",
-                logo: "https://i.imgur.com/DVC5w6H.png",
-                url: "https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8"
-            },
-            {
-                id: 7,
-                name: "Pelis y Popcorn", 
-                description: "Pelis para maratonear",
-                logo: "https://i.imgur.com/jP19sGt.png",
-                url: "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60fb2f47c133270007327375/master.m3u8"
-            },
-            {
-                id: 8,
-                name: "TV Cine Estelar",
-                description: "Lo mejor de PlutoTVCineEstelar",
-                logo: "https://i.imgur.com/v3BO4nW.png",
-                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1ac1f1b66c76000790ef27/master.m3u8"
-            },
-            {
-                id: 9,
-                name: "TV Cine Accion",
-                description: "Lo mejor de PlutoTVCineEstelar",
-                logo: "https://i.imgur.com/v3BO4nW.png", 
-                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1ac2591dd8880007bb7d6d/master.m3u8"
-            },
-            {
-                id: 10,
-                name: "vacante",
-                description: "vacante",
-                logo: "🎬",
-                url: "#"
-            }
-        ],
-        music: [
-            {
-                id: 1,
-                name: "VM Latino",
-                description: "Exitos Latinos",
-                logo: "https://i.imgur.com/Dvo1b82.png",
-                url: "https://59ef525c24caa.streamlock.net/vmtv/vmlatino/playlist.m3u8"
-            },
-            {
-                id: 2,
-                name: "TV Exitos",
-                description: "Exitos del mundo", 
-                logo: "https://i.imgur.com/ahz7X7u.png",
-                url: "https://streaming.grupomediosdelnorte.com:19360/tvexitos/tvexitos.m3u8"
-            },
-            {
-                id: 3,
-                name: "TV MTV Classic",
-                description: "MTV Clasico",
-                logo: "https://i.imgur.com/NPavpts.png",
-                url: "https://jmp2.uk/plu-66a11a21a79dea0008aa90ca.m3u8"
-            },
-            {
-                id: 4,
-                name: "vacante",
-                description: "sinRitmo",
-                logo: "💃",
-                url: "#"
-            }
-        ]
-    };
+
+const channelsData = {
+    cine: [
+        {
+            id: 1,
+            name: "Cine Canal",
+            description: "Las mejores películas de todos los tiempos",
+            logo: "https://i.imgur.com/Rcxr410.png",
+            url: "https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8"
+        },
+        {
+            id: 2,
+            name: "Cine Sony", 
+            description: "Sony Channel para ver los mejores programas",
+            logo: "https://i.imgur.com/bZWoDTg.png",
+            url: "https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8"
+        },
+        {
+            id: 3,
+            name: "Cine Premiere",
+            description: "Exitos taquilleros",
+            logo: "https://i.imgur.com/PdhWTO6.png", 
+            url: "https://mdstrm.com/live-stream-playlist/5a7b1e63a8da282c34d65445.m3u8"
+        },
+        {
+            id: 4,
+            name: "Cine Acción",
+            description: "Películas de acción y aventura",
+            logo: "https://i.imgur.com/njCKaMv.png",
+            url: "https://linear-354.frequency.stream/dist/vix/354/hls/master/playlist.m3u8"
+        },
+        {
+            id: 5,
+            name: "Cine Terror",
+            description: "Para los amantes del miedo", 
+            logo: "https://i.imgur.com/I5XxyLI.png",
+            url: "https://mdstrm.com/live-stream-playlist/5a7b1e63a8da282c34d65445.m3u8"
+        },
+        {
+            id: 6,
+            name: "Aurora Media Films",
+            description: "Películas que debes ver",
+            logo: "https://i.imgur.com/DVC5w6H.png",
+            url: "https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8"
+        },
+        {
+            id: 7,
+            name: "Cine Clásico", 
+            description: "Películas clásicas imperdibles",
+            logo: "https://i.imgur.com/jP19sGt.png",
+            url: "https://linear-354.frequency.stream/dist/vix/354/hls/master/playlist.m3u8"
+        },
+        {
+            id: 8,
+            name: "Cine Drama",
+            description: "Historias conmovedoras",
+            logo: "https://i.imgur.com/v3BO4nW.png",
+            url: "https://mdstrm.com/live-stream-playlist/5a7b1e63a8da282c34d65445.m3u8"
+        },
+        {
+            id: 9,
+            name: "Cine Comedia",
+            description: "Risas garantizadas",
+            logo: "https://i.imgur.com/v3BO4nW.png", 
+            url: "https://linear-354.frequency.stream/dist/vix/354/hls/master/playlist.m3u8"
+        },
+        {
+            id: 10,
+            name: "Cine Independiente",
+            description: "Producciones alternativas",
+            logo: "🎬",
+            url: "https://mdstrm.com/live-stream-playlist/5a7b1e63a8da282c34d65445.m3u8"
+        }
+    ],
+    music: [
+        {
+            id: 1,
+            name: "VM Latino",
+            description: "Éxitos Latinos",
+            logo: "https://i.imgur.com/Dvo1b82.png",
+            url: "https://59ef525c24caa.streamlock.net/vmtv/vmlatino/playlist.m3u8"
+        },
+        {
+            id: 2,
+            name: "TV Éxitos",
+            description: "Éxitos del mundo", 
+            logo: "https://i.imgur.com/ahz7X7u.png",
+            url: "https://streaming.grupomediosdelnorte.com:19360/tvexitos/tvexitos.m3u8"
+        },
+        {
+            id: 3,
+            name: "MTV Classics",
+            description: "MTV Clásico",
+            logo: "https://i.imgur.com/NPavpts.png",
+            url: "https://mdstrm.com/live-stream-playlist/57b4dbf5dbbfc8f16bb63ce1.m3u8"
+        },
+              {
+            id: 4,
+            name: "Vacante",
+            description: "sinRitmos",
+            logo: "💃",
+            url: "#"
+        }
+    ]
+};
+
+    
+
 
     // Elementos DOM
     const welcomeSection = document.getElementById('welcome-section');
@@ -656,6 +660,7 @@
 </body>
 
 </html>
+
 
 
 
