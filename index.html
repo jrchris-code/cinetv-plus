@@ -392,276 +392,270 @@
             </div>
         </div>
     </section>
-
-    <script>
-        // Función para cifrar URLs
-        function encryptURL(url) {
-            // Base64 + reverso + caracteres adicionales para hacerlo menos obvio
-            return btoa(url).split('').reverse().join('') + '==';
-        }
-
-        // Función para descifrar URLs
-        function decryptURL(encrypted) {
-            try {
-                // Remover los == adicionales y revertir
-                const withoutEquals = encrypted.slice(0, -2);
-                const reversed = withoutEquals.split('').reverse().join('');
-                return atob(reversed);
-            } catch (e) {
-                console.error('Error descifrando URL:', e);
-                return '';
+<script>
+    // Datos de canales SIN cifrado (para testing)
+    const channelsData = {
+        cine: [
+            {
+                id: 1,
+                name: "Cine Canal",
+                description: "Las mejores películas de todos los tiempos",
+                logo: "https://i.imgur.com/Rcxr410.png",
+                url: "https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8"
+            },
+            {
+                id: 2,
+                name: "Cine Sony", 
+                description: "Sony Channel para ver los mejores programas",
+                logo: "https://i.imgur.com/bZWoDTg.png",
+                url: "https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8"
+            },
+            {
+                id: 3,
+                name: "Cine Premiere",
+                description: "Exitos taquilleros",
+                logo: "https://i.imgur.com/PdhWTO6.png", 
+                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5cf968040ab7d8f181e6a68b/master.m3u8"
+            },
+            {
+                id: 4,
+                name: "Cine Adrenalina",
+                description: "Peliculas de Accion",
+                logo: "https://i.imgur.com/njCKaMv.png",
+                url: "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5d8d164d92e97a5e107638d2/master.m3u8"
+            },
+            {
+                id: 5,
+                name: "Cine Terror",
+                description: "Para los amantes del miedo y el suspenso", 
+                logo: "https://i.imgur.com/I5XxyLI.png",
+                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5dcddf1ed95e740009fef7ab/master.m3u8"
+            },
+            {
+                id: 6,
+                name: "Aurora Media Films",
+                description: "Peliculas que debes ver",
+                logo: "https://i.imgur.com/DVC5w6H.png",
+                url: "https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8"
+            },
+            {
+                id: 7,
+                name: "Pelis y Popcorn", 
+                description: "Pelis para maratonear",
+                logo: "https://i.imgur.com/jP19sGt.png",
+                url: "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60fb2f47c133270007327375/master.m3u8"
+            },
+            {
+                id: 8,
+                name: "TV Cine Estelar",
+                description: "Lo mejor de PlutoTVCineEstelar",
+                logo: "https://i.imgur.com/v3BO4nW.png",
+                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1ac1f1b66c76000790ef27/master.m3u8"
+            },
+            {
+                id: 9,
+                name: "TV Cine Accion",
+                description: "Lo mejor de PlutoTVCineEstelar",
+                logo: "https://i.imgur.com/v3BO4nW.png", 
+                url: "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1ac2591dd8880007bb7d6d/master.m3u8"
+            },
+            {
+                id: 10,
+                name: "vacante",
+                description: "vacante",
+                logo: "🎬",
+                url: "#"
             }
-        }
+        ],
+        music: [
+            {
+                id: 1,
+                name: "VM Latino",
+                description: "Exitos Latinos",
+                logo: "https://i.imgur.com/Dvo1b82.png",
+                url: "https://59ef525c24caa.streamlock.net/vmtv/vmlatino/playlist.m3u8"
+            },
+            {
+                id: 2,
+                name: "TV Exitos",
+                description: "Exitos del mundo", 
+                logo: "https://i.imgur.com/ahz7X7u.png",
+                url: "https://streaming.grupomediosdelnorte.com:19360/tvexitos/tvexitos.m3u8"
+            },
+            {
+                id: 3,
+                name: "TV MTV Classic",
+                description: "MTV Clasico",
+                logo: "https://i.imgur.com/NPavpts.png",
+                url: "https://jmp2.uk/plu-66a11a21a79dea0008aa90ca.m3u8"
+            },
+            {
+                id: 4,
+                name: "vacante",
+                description: "sinRitmo",
+                logo: "💃",
+                url: "#"
+            }
+        ]
+    };
 
-        // Datos de canales con URLs cifradas
-        const channelsData = {
-            cine: [
-                {
-                    id: 1,
-                    name: "Cine Canal",
-                    description: "Las mejores películas de todos los tiempos",
-                    logo: "https://i.imgur.com/Rcxr410.png",
-                    encryptedUrl: "8u3m.xedni/CINECANAL/z.bneggen.1reamts//:sptth" + "=="
-                },
-                {
-                    id: 2,
-                    name: "Cine Sony",
-                    description: "Sony Channel para ver los mejores programas",
-                    logo: "https://i.imgur.com/bZWoDTg.png",
-                    encryptedUrl: "8u3m.ylp/tilpsaj.1_720p/enic/golb/moc.tdwolk.nec-a//:sptth" + "=="
-                },
-                {
-                    id: 3,
-                    name: "Cine Premiere",
-                    description: "Exitos taquilleros",
-                    logo: "https://i.imgur.com/PdhWTO6.png",
-                    encryptedUrl: "8u3m.ret sam/v.tu tol.p/moc.t v.ll acirem a/sre t t ubs/moc.t v.t ol p/sre t t ubs. re hc t ubs- re t t i hs-ec iv res//:sptth" + "=="
-                },
-                {
-                    id: 4,
-                    name: "Cine Adrenalina",
-                    description: "Peliculas de Accion",
-                    logo: "https://i.imgur.com/njCKaMv.png",
-                    encryptedUrl: "8u3m.ret sam/2d836e701e5a792e9dd461d5/ne nnac/ sl h/ tci hc s/moc.t v.t ol p/sre t t ubs. re hc t ubs//:sptth" + "=="
-                },
-                {
-                    id: 5,
-                    name: "Cine Terror",
-                    description: "Para los amantes del miedo y el suspenso",
-                    logo: "https://i.imgur.com/I5XxyLI.png",
-                    encryptedUrl: "8u3m.ret sam/ba7efe9f00047e59edfcdd5/ne nnac/ sl h/dem be/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
-                },
-                {
-                    id: 6,
-                    name: "Aurora Media Films",
-                    description: "Peliculas que debes ver",
-                    logo: "https://i.imgur.com/DVC5w6H.png",
-                    encryptedUrl: "8u3m.e vilfa mororua/ev il/713/ vog.an at sihpi m aert s. t c e/ nd c//:sptth" + "=="
-                },
-                {
-                    id: 7,
-                    name: "Pelis y Popcorn",
-                    description: "Pelis para maratonear",
-                    logo: "https://i.imgur.com/jP19sGt.png",
-                    encryptedUrl: "8u3m.ret sam/57372337000072c73fbf06/ne nnac/ sl h/1- esu- re t t i hs- ne nnac- ec iv res-4d- v-fc/ re t t i hs. re hc t ubs- v-fc//:ptth" + "=="
-                },
-                {
-                    id: 8,
-                    name: "TV Cine Estelar",
-                    description: "Lo mejor de PlutoTVCineEstelar",
-                    logo: "https://i.imgur.com/v3BO4nW.png",
-                    encryptedUrl: "8u3m.ret sam/72fe09c7000676c6b1ca1f5/ne nnac/ sl h/dem be/ re t t i hs- ne nnac/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
-                },
-                {
-                    id: 9,
-                    name: "TV Cine Accion",
-                    description: "Lo mejor de PlutoTVCineEstelar",
-                    logo: "https://i.imgur.com/PXhCzXn.png",
-                    encryptedUrl: "8u3m.ret sam/d6d7bb7000888d d1 95a c1f 5/ne nnac/ sl h/dem be/ re t t i hs- ne nnac/ re t t ubs. re hc t ubs/moc.t v.t ol p/sre t t ubs/v1//:sptth" + "=="
-                },
-                {
-                    id: 10,
-                    name: "vacante",
-                    description: "vacante",
-                    logo: "🎬",
-                    encryptedUrl: "8u3m.edni-enic//:sptth" + "=="
-                }
-            ],
-            music: [
-                {
-                    id: 1,
-                    name: "VM Latino",
-                    description: "Exitos Latinos",
-                    logo: "https://i.imgur.com/Dvo1b82.png",
-                    encryptedUrl: "8u3m.ylp/tilpsaj/onitalmv/vtvm/kcol kn aert s.moc.526425fe95//:sptth" + "=="
-                },
-                {
-                    id: 2,
-                    name: "TV Exitos",
-                    description: "Exitos del mundo",
-                    logo: "https://i.imgur.com/ahz7X7u.png",
-                    encryptedUrl: "8u3m.sotixevt/sotixevt/06391: moc.et r onl aeds oid em pur t g//:sptth" + "=="
-                },
-                {
-                    id: 3,
-                    name: "TV MTV Classic",
-                    description: "MTV Clasico",
-                    logo: "https://i.imgur.com/NPavpts.png",
-                    encryptedUrl: "8u3m. ac 09aa8000a ed79 12a a66- ul p/ uk.2pmj//:sptth" + "=="
-                },
-                {
-                    id: 4,
-                    name: "vacante",
-                    description: "sinRitmo",
-                    logo: "💃",
-                    encryptedUrl: "8u3m.anital- ac isum//:sptth" + "=="
-                }
-            ]
-        };
+    // Elementos DOM
+    const welcomeSection = document.getElementById('welcome-section');
+    const channelsSection = document.getElementById('channels-section');
+    const channelsGrid = document.getElementById('channels-grid');
+    const sectionCategoryTitle = document.getElementById('section-category-title');
+    const backBtn = document.getElementById('back-btn');
+    const playerSection = document.getElementById('player-section');
+    const videoPlayer = document.getElementById('video-player');
+    const playerTitle = document.getElementById('player-title');
+    const closePlayer = document.getElementById('close-player');
+    const categoryButtons = document.querySelectorAll('.category-btn');
 
-        // Elementos DOM
-        const welcomeSection = document.getElementById('welcome-section');
-        const channelsSection = document.getElementById('channels-section');
-        const channelsGrid = document.getElementById('channels-grid');
-        const sectionCategoryTitle = document.getElementById('section-category-title');
-        const backBtn = document.getElementById('back-btn');
-        const playerSection = document.getElementById('player-section');
-        const videoPlayer = document.getElementById('video-player');
-        const playerTitle = document.getElementById('player-title');
-        const closePlayer = document.getElementById('close-player');
-        const categoryButtons = document.querySelectorAll('.category-btn');
+    // Variables
+    let hls = null;
+    let currentCategory = '';
 
-        // Variables
-        let hls = null;
-        let currentCategory = '';
+    // Desactivar clic derecho e inspección
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
 
-        // Desactivar clic derecho e inspección
-        document.addEventListener('contextmenu', function(e) {
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+            (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+            (e.ctrlKey && e.key === 'u')) {
             e.preventDefault();
             return false;
-        });
+        }
+    });
 
-        // Desactivar teclas de desarrollo (F12, Ctrl+Shift+I, etc.)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-                (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-                (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                return false;
-            }
+    // Event Listeners
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            currentCategory = button.getAttribute('data-category');
+            showChannels(currentCategory);
         });
+    });
 
-        // Event Listeners
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                currentCategory = button.getAttribute('data-category');
-                showChannels(currentCategory);
+    backBtn.addEventListener('click', showWelcome);
+    closePlayer.addEventListener('click', closeVideoPlayer);
+
+    // Funciones
+    function showChannels(category) {
+        welcomeSection.style.display = 'none';
+        channelsSection.style.display = 'block';
+        
+        const categoryTitle = category === 'cine' ? 'CANALES DE CINE' : 'CANALES DE MÚSICA';
+        sectionCategoryTitle.textContent = categoryTitle;
+        
+        channelsGrid.innerHTML = '';
+        
+        const channels = channelsData[category];
+        channels.forEach(channel => {
+            const channelCard = document.createElement('div');
+            channelCard.className = 'channel-card';
+            
+            const logoContent = channel.logo.startsWith('http') 
+                ? `<img src="${channel.logo}" alt="${channel.name}" onerror="this.style.display='none'">`
+                : `<div style="font-size: 60px;">${channel.logo}</div>`;
+            
+            channelCard.innerHTML = `
+                <div class="channel-logo">
+                    ${logoContent}
+                </div>
+                <div class="channel-info">
+                    <h3 class="channel-name">${channel.name}</h3>
+                    <p class="channel-description">${channel.description}</p>
+                </div>
+            `;
+            
+            channelCard.addEventListener('click', () => {
+                playChannel(channel);
             });
+            
+            channelsGrid.appendChild(channelCard);
         });
+    }
 
-        backBtn.addEventListener('click', showWelcome);
-        closePlayer.addEventListener('click', closeVideoPlayer);
+    function showWelcome() {
+        channelsSection.style.display = 'none';
+        playerSection.style.display = 'none';
+        welcomeSection.style.display = 'block';
+        
+        if (hls) {
+            hls.destroy();
+            hls = null;
+        }
+    }
 
-        // Funciones
-        function showChannels(category) {
-            welcomeSection.style.display = 'none';
-            channelsSection.style.display = 'block';
-            
-            // Actualizar título de la sección
-            const categoryTitle = category === 'cine' ? 'CANALES DE CINE' : 'CANALES DE MÚSICA';
-            sectionCategoryTitle.textContent = categoryTitle;
-            
-            // Limpiar grid
-            channelsGrid.innerHTML = '';
-            
-            // Cargar canales
-            const channels = channelsData[category];
-            channels.forEach(channel => {
-                const channelCard = document.createElement('div');
-                channelCard.className = 'channel-card';
-                
-                // Verificar si el logo es una URL de imagen o un emoji
-                const logoContent = channel.logo.startsWith('http') 
-                    ? `<img src="${channel.logo}" alt="${channel.name}" onerror="this.style.display='none'">`
-                    : `<div style="font-size: 60px;">${channel.logo}</div>`;
-                
-                channelCard.innerHTML = `
-                    <div class="channel-logo">
-                        ${logoContent}
-                    </div>
-                    <div class="channel-info">
-                        <h3 class="channel-name">${channel.name}</h3>
-                        <p class="channel-description">${channel.description}</p>
-                    </div>
-                `;
-                
-                channelCard.addEventListener('click', () => {
-                    playChannel(channel);
+    function playChannel(channel) {
+        // Si el canal es "vacante", no hacer nada
+        if (channel.url === '#') {
+            return;
+        }
+        
+        playerTitle.textContent = channel.name;
+        playerSection.style.display = 'flex';
+        
+        // Usar la URL directamente (sin cifrado por ahora)
+        const streamUrl = channel.url;
+        
+        // Configurar HLS.js
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(videoPlayer);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                videoPlayer.play().catch(e => {
+                    console.log('Error al reproducir:', e);
                 });
-                
-                channelsGrid.appendChild(channelCard);
+            });
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                console.error('Error HLS:', data);
+                if (data.fatal) {
+                    switch(data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            alert('Error de red. Intente nuevamente.');
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            alert('Error en el video. Intente otro canal.');
+                            break;
+                        default:
+                            alert('Error al cargar el canal. Intente nuevamente.');
+                            break;
+                    }
+                }
+            });
+        } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+            videoPlayer.src = streamUrl;
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                videoPlayer.play().catch(e => {
+                    console.log('Error al reproducir:', e);
+                });
             });
         }
+    }
 
-        function showWelcome() {
-            channelsSection.style.display = 'none';
-            playerSection.style.display = 'none';
-            welcomeSection.style.display = 'block';
-            
-            // Detener reproducción si está activa
-            if (hls) {
-                hls.destroy();
-                hls = null;
-            }
+    function closeVideoPlayer() {
+        playerSection.style.display = 'none';
+        
+        if (hls) {
+            hls.destroy();
+            hls = null;
         }
+        videoPlayer.pause();
+        videoPlayer.src = '';
+    }
 
-        function playChannel(channel) {
-            playerTitle.textContent = channel.name;
-            playerSection.style.display = 'flex';
-            
-            // Descifrar la URL antes de reproducir
-            const decryptedUrl = decryptURL(channel.encryptedUrl);
-            
-            if (!decryptedUrl) {
-                alert('Error al cargar el canal. Intente nuevamente.');
-                return;
-            }
-            
-            // Configurar HLS.js para reproducir el stream
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(decryptedUrl);
-                hls.attachMedia(videoPlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoPlayer.play();
-                });
-            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                // Soporte nativo para HLS (Safari)
-                videoPlayer.src = decryptedUrl;
-                videoPlayer.addEventListener('loadedmetadata', function() {
-                    videoPlayer.play();
-                });
-            }
-        }
-
-        function closeVideoPlayer() {
-            playerSection.style.display = 'none';
-            
-            // Detener reproducción
-            if (hls) {
-                hls.destroy();
-                hls = null;
-            }
-            videoPlayer.pause();
-            videoPlayer.src = '';
-        }
-
-        // Inicializar
-        showWelcome();
-    </script>
+    // Inicializar
+    showWelcome();
+</script>
+    
 </body>
 
 </html>
+
 
 
