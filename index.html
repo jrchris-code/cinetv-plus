@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,11 +19,9 @@
         frame-ancestors 'none';
         object-src 'none';
         base-uri 'self';
-        form-action 'none';
     ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta name="robots" content="noindex, nofollow">
     
     <style>
         :root {
@@ -356,6 +353,16 @@
             height: 100%;
             background-color: #000;
         }
+
+        .loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 10;
+        }
         
         /* Mejoras para móvil */
         .channel-card {
@@ -471,121 +478,64 @@
                 <button class="close-player" id="close-player">×</button>
             </div>
             <div class="video-container">
+                <div class="loading-message" id="loading-message" style="display: none;">
+                    Cargando canal...<br>
+                    <small>Espere por favor</small>
+                </div>
                 <video id="video-player" controls></video>
             </div>
         </div>
     </section>
 
     <script>
-        // ===== PROTECCIONES DE SEGURIDAD =====
-        
-        // Validar y sanitizar URLs
-        function sanitizeURL(url) {
-            if (!url || typeof url !== 'string') return null;
-            
-            const allowedProtocols = ['https:', 'http:'];
-            let parsedUrl;
-            
-            try {
-                parsedUrl = new URL(url);
-            } catch (e) {
-                return null;
-            }
-            
-            if (!allowedProtocols.includes(parsedUrl.protocol)) {
-                return null;
-            }
-            
-            // Solo permitir URLs que terminen en .m3u8
-            if (!url.toLowerCase().endsWith('.m3u8') && url !== '#') {
-                return null;
-            }
-            
-            return url;
-        }
-
-        // Validar URLs de imágenes
-        function sanitizeImageURL(url) {
-            if (!url || typeof url !== 'string') return null;
-            
-            // Solo permitir Imgur y emojis
-            if (url.startsWith('https://i.imgur.com/')) {
-                try {
-                    new URL(url);
-                    return url;
-                } catch (e) {
-                    return null;
-                }
-            }
-            
-            // Permitir emojis (no URLs)
-            if (!url.includes('://')) {
-                return url;
-            }
-            
-            return null;
-        }
-
-        // ===== CONTADOR DE VISITAS SEGURO =====
+        // ===== CONTADOR DE VISITAS =====
         function initVisitorCounter() {
-            const STORAGE_KEY = 'cinetv_visit_count_secure';
+            const STORAGE_KEY = 'cinetv_visit_count';
             
-            try {
-                let visitCount = parseInt(localStorage.getItem(STORAGE_KEY)) || 0;
-                
-                // Validar que el número sea razonable
-                if (visitCount < 0 || visitCount > 1000000) {
-                    visitCount = 0;
-                }
-                
-                visitCount++;
-                localStorage.setItem(STORAGE_KEY, visitCount.toString());
-                
-                // Sanitizar output
-                const safeCount = Math.min(visitCount, 999999).toLocaleString();
-                document.getElementById('visit-count').textContent = safeCount;
-                
-                const counter = document.getElementById('visitor-counter');
-                counter.style.opacity = '0';
-                setTimeout(() => {
-                    counter.style.transition = 'opacity 0.5s ease';
-                    counter.style.opacity = '0.6';
-                }, 1000);
-            } catch (error) {
-                console.warn('Error en contador de visitas:', error);
-            }
+            let visitCount = parseInt(localStorage.getItem(STORAGE_KEY)) || 0;
+            visitCount++;
+            
+            localStorage.setItem(STORAGE_KEY, visitCount.toString());
+            document.getElementById('visit-count').textContent = visitCount.toLocaleString();
+            
+            const counter = document.getElementById('visitor-counter');
+            counter.style.opacity = '0';
+            setTimeout(() => {
+                counter.style.transition = 'opacity 0.5s ease';
+                counter.style.opacity = '0.6';
+            }, 1000);
         }
 
-        // ===== DATOS DE CANALES SANITIZADOS =====
+        // ===== DATOS DE CANALES FUNCIONALES =====
         const channelsData = {
             cine: [
                 {
                     id: 1,
                     name: "Cine Canal",
                     description: "Las mejores películas de todos los tiempos",
-                    logo: sanitizeImageURL("https://i.imgur.com/Rcxr410.png"),
-                    url: sanitizeURL("https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8")
+                    logo: "https://i.imgur.com/Rcxr410.png",
+                    url: "https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8"
                 },
                 {
                     id: 2,
                     name: "Cine Sony", 
                     description: "Sony Channel para ver los mejores programas",
-                    logo: sanitizeImageURL("https://i.imgur.com/bZWoDTg.png"),
-                    url: sanitizeURL("https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8")
+                    logo: "https://i.imgur.com/bZWoDTg.png",
+                    url: "https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8"
                 },
                 {
                     id: 3,
                     name: "Aurora Media Films",
                     description: "Películas que debes ver",
-                    logo: sanitizeImageURL("https://i.imgur.com/DVC5w6H.png"),
-                    url: sanitizeURL("https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8")
+                    logo: "https://i.imgur.com/DVC5w6H.png",
+                    url: "https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8"
                 },
                 {
                     id: 4,
                     name: "VACANTE",
                     description: "Espacio disponible para nuevo canal",
-                    logo: sanitizeImageURL("➕"),
-                    url: sanitizeURL("#")
+                    logo: "➕",
+                    url: "#"
                 }
             ],
             music: [
@@ -593,29 +543,29 @@
                     id: 1,
                     name: "VM Latino",
                     description: "Éxitos Latinos",
-                    logo: sanitizeImageURL("https://i.imgur.com/Dvo1b82.png"),
-                    url: sanitizeURL("https://59ef525c24caa.streamlock.net/vmtv/vmlatino/playlist.m3u8")
+                    logo: "https://i.imgur.com/Dvo1b82.png",
+                    url: "https://59ef525c24caa.streamlock.net/vmtv/vmlatino/playlist.m3u8"
                 },
                 {
                     id: 2,
                     name: "TV Éxitos",
                     description: "Éxitos del mundo", 
-                    logo: sanitizeImageURL("https://i.imgur.com/ahz7X7u.png"),
-                    url: sanitizeURL("https://streaming.grupomediosdelnorte.com:19360/tvexitos/tvexitos.m3u8")
+                    logo: "https://i.imgur.com/ahz7X7u.png",
+                    url: "https://streaming.grupomediosdelnorte.com:19360/tvexitos/tvexitos.m3u8"
                 },
                 {
                     id: 3,
                     name: "MTV Classics",
                     description: "MTV Clásico",
-                    logo: sanitizeImageURL("https://i.imgur.com/NPavpts.png"),
-                    url: sanitizeURL("https://jmp2.uk/plu-66a11a21a79dea0008aa90ca.m3u8")
+                    logo: "https://i.imgur.com/NPavpts.png",
+                    url: "https://jmp2.uk/plu-66a11a21a79dea0008aa90ca.m3u8"
                 },
                 {
                     id: 4,
                     name: "VACANTE",
                     description: "Espacio disponible para nuevo canal",
-                    logo: sanitizeImageURL("➕"),
-                    url: sanitizeURL("#")
+                    logo: "➕",
+                    url: "#"
                 }               
             ]
         };
@@ -630,74 +580,50 @@
         const videoPlayer = document.getElementById('video-player');
         const playerTitle = document.getElementById('player-title');
         const closePlayer = document.getElementById('close-player');
+        const loadingMessage = document.getElementById('loading-message');
         const categoryButtons = document.querySelectorAll('.category-btn');
 
         // Variables
         let hls = null;
         let currentCategory = '';
 
-        // ===== INICIALIZACIÓN SEGURA =====
+        // ===== INICIALIZACIÓN =====
         function init() {
-            // Proteger console (solo en producción)
-            if (window.location.protocol === 'https:') {
-                Object.freeze(console);
-            }
-            
             initVisitorCounter();
             showWelcome();
         }
 
-        // ===== PROTECCIONES CONTRA INSPECCIÓN =====
+        // Desactivar clic derecho e inspección
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             return false;
         });
 
+        // Desactivar teclas de desarrollo
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || 
                 (e.ctrlKey && e.shiftKey && e.key === 'I') || 
                 (e.ctrlKey && e.shiftKey && e.key === 'C') ||
                 (e.ctrlKey && e.key === 'u') ||
-                (e.ctrlKey && e.key === 'r') ||
-                (e.ctrlKey && e.key === 's')) {
+                (e.ctrlKey && e.key === 'r')) {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // Prevenir navegación no deseada
-        window.addEventListener('beforeunload', function(e) {
-            // No hacer nada, solo para dificultar la salida
-        });
-
-        // ===== EVENT LISTENERS SEGUROS =====
+        // Event Listeners
         categoryButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const category = button.getAttribute('data-category');
-                if (category === 'cine' || category === 'music') {
-                    currentCategory = category;
-                    showChannels(currentCategory);
-                }
+            button.addEventListener('click', () => {
+                currentCategory = button.getAttribute('data-category');
+                showChannels(currentCategory);
             });
         });
 
-        backBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            showWelcome();
-        });
+        backBtn.addEventListener('click', showWelcome);
+        closePlayer.addEventListener('click', closeVideoPlayer);
 
-        closePlayer.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeVideoPlayer();
-        });
-
-        // ===== FUNCIONES PRINCIPALES SEGURAS =====
+        // Funciones
         function showChannels(category) {
-            if (category !== 'cine' && category !== 'music') return;
-            
             welcomeSection.style.display = 'none';
             channelsSection.style.display = 'block';
             
@@ -708,39 +634,27 @@
             
             const channels = channelsData[category];
             channels.forEach(channel => {
-                // Validación adicional de datos
-                if (!channel || typeof channel !== 'object') return;
-                
                 const channelCard = document.createElement('div');
                 channelCard.className = 'channel-card';
                 if (channel.name === 'VACANTE') {
                     channelCard.classList.add('vacante');
                 }
                 
-                // Sanitizar contenido del logo
-                let logoContent = '';
-                if (channel.logo && channel.logo.startsWith('https://')) {
-                    logoContent = `<img src="${channel.logo.replace(/[<>"']/g, '')}" alt="${channel.name.replace(/[<>"']/g, '')}" onerror="this.style.display='none'">`;
-                } else if (channel.logo) {
-                    logoContent = `<div style="font-size: 60px;">${channel.logo}</div>`;
-                }
-                
-                // Sanitizar HTML
-                const safeName = channel.name ? channel.name.replace(/[<>"']/g, '') : '';
-                const safeDescription = channel.description ? channel.description.replace(/[<>"']/g, '') : '';
+                const logoContent = channel.logo.startsWith('http') 
+                    ? `<img src="${channel.logo}" alt="${channel.name}" onerror="this.style.display='none'">`
+                    : `<div style="font-size: 60px;">${channel.logo}</div>`;
                 
                 channelCard.innerHTML = `
                     <div class="channel-logo">
                         ${logoContent}
                     </div>
                     <div class="channel-info">
-                        <h3 class="channel-name">${safeName}</h3>
-                        <p class="channel-description">${safeDescription}</p>
+                        <h3 class="channel-name">${channel.name}</h3>
+                        <p class="channel-description">${channel.description}</p>
                     </div>
                 `;
                 
-                channelCard.addEventListener('click', (e) => {
-                    e.preventDefault();
+                channelCard.addEventListener('click', () => {
                     playChannel(channel);
                 });
                 
@@ -754,120 +668,105 @@
             welcomeSection.style.display = 'block';
             
             if (hls) {
-                try {
-                    hls.destroy();
-                } catch (e) {
-                    console.warn('Error al destruir HLS:', e);
-                }
+                hls.destroy();
                 hls = null;
             }
         }
 
         function playChannel(channel) {
-            if (!channel || channel.name === 'VACANTE' || channel.url === '#') {
+            if (channel.url === '#' || channel.name === 'VACANTE') {
                 return;
             }
             
-            // Validación final de URL
-            const streamUrl = sanitizeURL(channel.url);
-            if (!streamUrl) {
-                console.error('URL de stream no válida');
-                return;
-            }
-            
-            playerTitle.textContent = channel.name ? channel.name.replace(/[<>"']/g, '') : 'Canal';
+            playerTitle.textContent = channel.name;
             playerSection.style.display = 'flex';
+            loadingMessage.style.display = 'block';
             
-            // Configurar HLS.js con timeout de seguridad
+            const streamUrl = channel.url;
+            console.log('Intentando reproducir:', streamUrl);
+            
+            // Configurar HLS.js
             if (Hls.isSupported()) {
-                const loadTimeout = setTimeout(() => {
-                    alert('Timeout: El canal tarda en cargar. Intente otro.');
-                    closeVideoPlayer();
-                }, 15000);
-                
-                try {
-                    hls = new Hls({
-                        maxMaxBufferLength: 30,
-                        maxBufferSize: 60 * 1000 * 1000,
-                        maxBufferLength: 30,
-                        enableWorker: false // Más seguro
-                    });
-                    
-                    hls.loadSource(streamUrl);
-                    hls.attachMedia(videoPlayer);
-                    
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        clearTimeout(loadTimeout);
-                        videoPlayer.play().catch(e => {
-                            console.warn('Error al reproducir:', e);
-                        });
-                    });
-                    
-                    hls.on(Hls.Events.ERROR, function(event, data) {
-                        clearTimeout(loadTimeout);
-                        console.error('Error HLS:', data);
-                        if (data.fatal) {
-                            switch(data.type) {
-                                case Hls.ErrorTypes.NETWORK_ERROR:
-                                    alert('Error de red. Intente nuevamente.');
-                                    break;
-                                case Hls.ErrorTypes.MEDIA_ERROR:
-                                    alert('Error en el video. Intente otro canal.');
-                                    break;
-                                default:
-                                    alert('Error al cargar el canal. Intente nuevamente.');
-                                    break;
-                            }
-                            closeVideoPlayer();
-                        }
-                    });
-                } catch (error) {
-                    clearTimeout(loadTimeout);
-                    console.error('Error al inicializar HLS:', error);
-                    alert('Error al cargar el reproductor.');
+                if (hls) {
+                    hls.destroy();
                 }
-            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                videoPlayer.src = streamUrl;
-                videoPlayer.addEventListener('loadedmetadata', function() {
+                
+                hls = new Hls({
+                    debug: false,
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 90
+                });
+                
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoPlayer);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    console.log('Manifiesto cargado, intentando reproducir...');
+                    loadingMessage.style.display = 'none';
                     videoPlayer.play().catch(e => {
-                        console.warn('Error al reproducir:', e);
+                        console.error('Error al reproducir automáticamente:', e);
+                        // El usuario tendrá que hacer clic manualmente
                     });
                 });
+                
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.error('Error HLS:', data);
+                    loadingMessage.style.display = 'none';
+                    
+                    if (data.fatal) {
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                alert('Error de red. El canal puede no estar disponible.');
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                alert('Error en el formato de video.');
+                                break;
+                            default:
+                                alert('Error al cargar el canal. Intente nuevamente.');
+                                break;
+                        }
+                        closeVideoPlayer();
+                    }
+                });
+                
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                // Soporte nativo para HLS (Safari)
+                videoPlayer.src = streamUrl;
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    loadingMessage.style.display = 'none';
+                    videoPlayer.play().catch(e => {
+                        console.error('Error al reproducir en Safari:', e);
+                    });
+                });
+            } else {
+                loadingMessage.style.display = 'none';
+                alert('Tu navegador no soporta la reproducción de streams HLS.');
             }
+            
+            // Timeout de seguridad
+            setTimeout(() => {
+                if (loadingMessage.style.display !== 'none') {
+                    loadingMessage.style.display = 'none';
+                    alert('El canal está tardando en cargar. Intente nuevamente o pruebe otro canal.');
+                }
+            }, 15000);
         }
 
         function closeVideoPlayer() {
             playerSection.style.display = 'none';
+            loadingMessage.style.display = 'none';
             
             if (hls) {
-                try {
-                    hls.destroy();
-                } catch (e) {
-                    console.warn('Error al destruir HLS:', e);
-                }
+                hls.destroy();
                 hls = null;
             }
-            
-            try {
-                videoPlayer.pause();
-                videoPlayer.src = '';
-                videoPlayer.load();
-            } catch (e) {
-                console.warn('Error al limpiar video player:', e);
-            }
+            videoPlayer.pause();
+            videoPlayer.src = '';
         }
 
-        // ===== INICIALIZACIÓN FINAL =====
-        document.addEventListener('DOMContentLoaded', function() {
-            // Pequeño delay para asegurar que todo esté listo
-            setTimeout(init, 100);
-        });
-
-        // Manejo global de errores
-        window.addEventListener('error', function(e) {
-            console.warn('Error capturado:', e.error);
-            return true;
-        });
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
