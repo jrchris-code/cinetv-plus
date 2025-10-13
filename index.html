@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,22 +8,17 @@
     <title>CineTv Plus - Plataforma TV</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <meta name="referrer" content="no-referrer">
-    
-    <!-- Headers de Seguridad Mejorados -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' https://i.imgur.com https: data:;
-        media-src https:;
-        connect-src https:;
-        frame-ancestors 'none';
-        object-src 'none';
-        base-uri 'self';
-    ">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self' https:;
+                   media-src https: blob: data:;
+                   script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net;
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: https:;
+                   connect-src https:;
+                   font-src 'self';
+                   object-src 'none';
+                   base-uri 'self';
+                   form-action 'none'">
     <style>
         :root {
             --primary-color: #8e8e93;
@@ -353,16 +349,6 @@
             height: 100%;
             background-color: #000;
         }
-
-        .loading-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            text-align: center;
-            z-index: 10;
-        }
         
         /* Mejoras para móvil */
         .channel-card {
@@ -478,10 +464,6 @@
                 <button class="close-player" id="close-player">×</button>
             </div>
             <div class="video-container">
-                <div class="loading-message" id="loading-message" style="display: none;">
-                    Cargando canal...<br>
-                    <small>Espere por favor</small>
-                </div>
                 <video id="video-player" controls></video>
             </div>
         </div>
@@ -490,14 +472,22 @@
     <script>
         // ===== CONTADOR DE VISITAS =====
         function initVisitorCounter() {
+            // Clave única para almacenar en localStorage
             const STORAGE_KEY = 'cinetv_visit_count';
             
+            // Obtener contador actual o inicializar en 0
             let visitCount = parseInt(localStorage.getItem(STORAGE_KEY)) || 0;
+            
+            // Incrementar contador
             visitCount++;
             
+            // Guardar en localStorage
             localStorage.setItem(STORAGE_KEY, visitCount.toString());
+            
+            // Actualizar display
             document.getElementById('visit-count').textContent = visitCount.toLocaleString();
             
+            // Efecto sutil al cargar
             const counter = document.getElementById('visitor-counter');
             counter.style.opacity = '0';
             setTimeout(() => {
@@ -506,7 +496,7 @@
             }, 1000);
         }
 
-        // ===== DATOS DE CANALES FUNCIONALES =====
+        // ===== DATOS DE CANALES =====
         const channelsData = {
             cine: [
                 {
@@ -537,6 +527,7 @@
                     logo: "➕",
                     url: "#"
                 }
+                
             ],
             music: [
                 {
@@ -580,7 +571,6 @@
         const videoPlayer = document.getElementById('video-player');
         const playerTitle = document.getElementById('player-title');
         const closePlayer = document.getElementById('close-player');
-        const loadingMessage = document.getElementById('loading-message');
         const categoryButtons = document.querySelectorAll('.category-btn');
 
         // Variables
@@ -674,88 +664,58 @@
         }
 
         function playChannel(channel) {
+            // Si el canal es "VACANTE", no hacer nada
             if (channel.url === '#' || channel.name === 'VACANTE') {
                 return;
             }
             
             playerTitle.textContent = channel.name;
             playerSection.style.display = 'flex';
-            loadingMessage.style.display = 'block';
             
             const streamUrl = channel.url;
-            console.log('Intentando reproducir:', streamUrl);
             
-            // Configurar HLS.js
+            // Configurar HLS.js con opciones que eviten el uso de blob
             if (Hls.isSupported()) {
-                if (hls) {
-                    hls.destroy();
-                }
-                
                 hls = new Hls({
-                    debug: false,
-                    enableWorker: true,
-                    lowLatencyMode: true,
-                    backBufferLength: 90
+                    enableWorker: false, // Desactiva el worker que usa blob
+                    lowLatencyMode: false,
+                    backBufferLength: 0
                 });
-                
                 hls.loadSource(streamUrl);
                 hls.attachMedia(videoPlayer);
-                
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    console.log('Manifiesto cargado, intentando reproducir...');
-                    loadingMessage.style.display = 'none';
                     videoPlayer.play().catch(e => {
-                        console.error('Error al reproducir automáticamente:', e);
-                        // El usuario tendrá que hacer clic manualmente
+                        console.log('Error al reproducir:', e);
                     });
                 });
-                
                 hls.on(Hls.Events.ERROR, function(event, data) {
                     console.error('Error HLS:', data);
-                    loadingMessage.style.display = 'none';
-                    
                     if (data.fatal) {
                         switch(data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                alert('Error de red. El canal puede no estar disponible.');
+                                alert('Error de red. Intente nuevamente.');
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                alert('Error en el formato de video.');
+                                alert('Error en el video. Intente otro canal.');
                                 break;
                             default:
                                 alert('Error al cargar el canal. Intente nuevamente.');
                                 break;
                         }
-                        closeVideoPlayer();
                     }
                 });
-                
             } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                // Soporte nativo para HLS (Safari)
                 videoPlayer.src = streamUrl;
                 videoPlayer.addEventListener('loadedmetadata', function() {
-                    loadingMessage.style.display = 'none';
                     videoPlayer.play().catch(e => {
-                        console.error('Error al reproducir en Safari:', e);
+                        console.log('Error al reproducir:', e);
                     });
                 });
-            } else {
-                loadingMessage.style.display = 'none';
-                alert('Tu navegador no soporta la reproducción de streams HLS.');
             }
-            
-            // Timeout de seguridad
-            setTimeout(() => {
-                if (loadingMessage.style.display !== 'none') {
-                    loadingMessage.style.display = 'none';
-                    alert('El canal está tardando en cargar. Intente nuevamente o pruebe otro canal.');
-                }
-            }, 15000);
         }
 
         function closeVideoPlayer() {
             playerSection.style.display = 'none';
-            loadingMessage.style.display = 'none';
             
             if (hls) {
                 hls.destroy();
@@ -765,8 +725,8 @@
             videoPlayer.src = '';
         }
 
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', init);
+        // Inicializar
+        init();
     </script>
 </body>
 </html>
