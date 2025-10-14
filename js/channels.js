@@ -27,7 +27,7 @@ const channelsData = {
             name: "Cine Terror",
             description: "No Apto para Cardiacos",
             logo: "https://i.imgur.com/24oXoQF.png",
-            url: "https://cors-proxy.cooks.fyi/https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5dcddf1ed95e740009fef7ab/master.m3u8"
+            url: "https://corsproxy.io/?https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5dcddf1ed95e740009fef7ab/master.m3u8"
         },
         {
             id:5,
