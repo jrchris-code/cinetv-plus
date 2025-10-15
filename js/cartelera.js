@@ -65,7 +65,7 @@ function showCartelera() {
             <div class="pelicula-info">
                 <p class="pelicula-description">${pelicula.descripcion}</p>
                 <a href="${pelicula.url}" target="_blank" class="ver-canal-btn">
-                    ▶ Ver en Tubi TV
+                    ▶ Ver Tubi TV
                 </a>
             </div>
         `;
@@ -77,9 +77,9 @@ function showCartelera() {
     const mensajeAdaptable = document.createElement('div');
     mensajeAdaptable.className = 'cartelera-footer';
     mensajeAdaptable.innerHTML = `
-        <p><strong>💡 En PC/Móvil:</strong> Haz clic en "Ver en Tubi TV" para abrir en nueva pestaña</p>
+        <p><strong>💡 En PC/Móvil:</strong> Haz clic en "Ver Tubi TV" para abrir en nueva pestaña</p>
         <p><strong>📺 En Smart TV:</strong> Anota los títulos y búscalos en la app de Tubi TV</p>
-        <p>🔄 Actualizado manualmente cada mes con lo mejor del terror</p>
+        <p>🔄 Actualizado mes octubre terror</p>
     `;
     carteleraGrid.appendChild(mensajeAdaptable);
 }
