@@ -26,7 +26,8 @@ const channelsData = {
             id: 4,
             name: "Cine Terror",
             description: "No Apto para Cardiacos",
-            logo: "https://i.imgur.com/24oXoQF.png",
+            logo: "logo: "assets/images/horror.png"
+",
             url: "https://corsproxy.io/?https://stream.media.usc.iptvdomain.com/stream/suspenso/playlist.m3u8"
         },
         {
