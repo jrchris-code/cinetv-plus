@@ -63,7 +63,8 @@ function showCartelera() {
                 <span class="live-badge">🎬TOP ${index + 1}</span>
             </div>
             <div class="pelicula-info">
-                <p class="pelicula-description">${pelicula.descripcion}</p><br>
+                <p class="pelicula-description">${pelicula.descripcion}</p>
+                <br>
                 <a href="${pelicula.url}" target="_blank" class="ver-canal-btn">
                     ▶ Ver Tubi TV
                 </a>
